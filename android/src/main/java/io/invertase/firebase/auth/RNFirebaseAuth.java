@@ -277,19 +277,17 @@ class RNFirebaseAuth extends ReactContextBaseJavaModule {
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
           // User has been automatically verified, log them in
           firebaseAuth.signInWithCredential(phoneAuthCredential)
-            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
               @Override
-              public void onSuccess(AuthResult authResult) {
-                // onAuthStateChanged will pick up the user change
-                Log.d(TAG, "signInWithPhoneNumber:autoVerified:success");
-              }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-              @Override
-              public void onFailure(@NonNull Exception exception) {
-                Log.e(TAG, "signInWithPhoneNumber:autoVerified:failure", exception);
-                // TODO: Will this ever error? How do we get it back to the JS side?
-                // promiseRejectAuthException(promise, exception);
+              public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                  Log.d(TAG, "_confirmVerificationCode:autoVerified:signInWithCredential:onComplete:success");
+                  promiseWithUser(task.getResult().getUser(), promise);
+                } else {
+                  Exception exception = task.getException();
+                  Log.e(TAG, "_confirmVerificationCode:autoVerified:signInWithCredential:onComplete:failure", exception);
+                  promiseRejectAuthException(promise, exception);
+                }
               }
             });
         }
@@ -312,11 +310,11 @@ class RNFirebaseAuth extends ReactContextBaseJavaModule {
         }
 
         @Override
-        public void onCodeAutoRetrievalTimeOut (String verificationId) {
+        public void onCodeAutoRetrievalTimeOut(String verificationId) {
           super.onCodeAutoRetrievalTimeOut(verificationId);
           // Purposefully not doing anything with this at the moment
         }
-    });
+      });
   }
 
   @ReactMethod
@@ -331,11 +329,11 @@ class RNFirebaseAuth extends ReactContextBaseJavaModule {
         @Override
         public void onComplete(@NonNull Task<AuthResult> task) {
           if (task.isSuccessful()) {
-            Log.d(TAG, "signInWithCredential:onComplete:success");
+            Log.d(TAG, "_confirmVerificationCode:signInWithCredential:onComplete:success");
             promiseWithUser(task.getResult().getUser(), promise);
           } else {
             Exception exception = task.getException();
-            Log.e(TAG, "signInWithCredential:onComplete:failure", exception);
+            Log.e(TAG, "_confirmVerificationCode:signInWithCredential:onComplete:failure", exception);
             promiseRejectAuthException(promise, exception);
           }
         }
