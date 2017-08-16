@@ -66,6 +66,15 @@ public class RNFirebaseDatabase extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void setPersistenceCacheSizeBytes(long bytes, Callback callback) {
+    mFirebaseDatabase.setPersistenceCacheSizeBytes(bytes);
+
+    WritableMap res = Arguments.createMap();
+    res.putString("status", "success");
+    callback.invoke(null, res);
+  }
+
+  @ReactMethod
   public void keepSynced(
     final String path,
     final Boolean enable,
