@@ -1,7 +1,6 @@
 #import "RNFirebaseDatabase.h"
 
 #if __has_include(<FirebaseDatabase/FIRDatabase.h>)
-
 #import "RNFirebaseDatabaseReference.h"
 #import "RNFirebaseEvents.h"
 #import "Firebase.h"
@@ -110,11 +109,7 @@ RCT_EXPORT_METHOD(tryCommitTransaction:
     dispatch_semaphore_signal(sema);
 }
 
-RCT_EXPORT_METHOD(enablePersistence:
-    (BOOL) enable
-            callback:
-            (RCTResponseSenderBlock) callback) {
-
+RCT_EXPORT_METHOD(enablePersistence:(BOOL) enable callback:(RCTResponseSenderBlock) callback) {
     BOOL isEnabled = [FIRDatabase database].persistenceEnabled;
     if (isEnabled != enable) {
         @try {
@@ -126,15 +121,11 @@ RCT_EXPORT_METHOD(enablePersistence:
     callback(@[[NSNull null], @{@"result": @"success"}]);
 }
 
-RCT_EXPORT_METHOD(setPersistenceCacheSizeBytes:
-    (NSUInteger *) bytes
-            callback:
-            (RCTResponseSenderBlock) callback) {
-
+RCT_EXPORT_METHOD(setPersistenceCacheSizeBytes:(NSUInteger *) bytes callback:(RCTResponseSenderBlock) callback) {
     [FIRDatabase database].persistenceCacheSizeBytes = (NSUInteger) bytes;
     callback(@[[NSNull null], @{@"result": @"success"}]);
 }
-§
+
 RCT_EXPORT_METHOD(keepSynced:
     (NSString *) path
             withEnable:
@@ -158,28 +149,21 @@ RCT_EXPORT_METHOD(set:
     }];
 }
 
-RCT_EXPORT_METHOD(priority:
-    (NSString *) path
-            priorityData:
-            (NSDictionary *) priorityData
-            callback:
-            (RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(priority:(NSString *) path
+                  priorityData:(NSDictionary *) priorityData
+                  callback:(RCTResponseSenderBlock) callback) {
     FIRDatabaseReference *ref = [self getPathRef:path];
-    [ref setPriority:[priorityData valueForKey:@"value"] withCompletionBlock:^(NSError *_Nullable error, FIRDatabaseReference *_Nonnull ref) {
+    [ref setPriority:[priorityData valueForKey:@"value"] withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
         [self handleCallback:@"priority" callback:callback databaseError:error];
     }];
 }
 
-RCT_EXPORT_METHOD(withPriority:
-    (NSString *) path
-            data:
-            (NSDictionary *) data
-            priorityData:
-            (NSDictionary *) priorityData
-            callback:
-            (RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(withPriority:(NSString *) path
+                          data:(NSDictionary *) data
+                  priorityData:(NSDictionary *) priorityData
+                      callback:(RCTResponseSenderBlock) callback) {
     FIRDatabaseReference *ref = [self getPathRef:path];
-    [ref setValue:[data valueForKey:@"value"] andPriority:[priorityData valueForKey:@"value"] withCompletionBlock:^(NSError *_Nullable error, FIRDatabaseReference *_Nonnull ref) {
+    [ref setValue:[data valueForKey:@"value"] andPriority:[priorityData valueForKey:@"value"] withCompletionBlock:^(NSError * _Nullable error, FIRDatabaseReference * _Nonnull ref) {
         [self handleCallback:@"withPriority" callback:callback databaseError:error];
     }];
 }
