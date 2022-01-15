@@ -101,7 +101,7 @@
     "react-dom": "^16.2.0",
     "react-native": "^0.52.0",
     "rimraf": "^2.6.2",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.5",
     "typescript": "^2.6.2",
     "wml": "0.0.82"
   },
